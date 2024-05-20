@@ -8,24 +8,26 @@ class Backstory
     {
         if ($type == 'concept') {
             $query = "SELECT ecc_backstory.characterID, characters.accountID as accountID, characters.character_name as name, characters.faction as faction, update_user.name AS concept_updated_by,
-            approved_user.name AS concept_approved_by, ecc_backstory.concept_updated_date, ecc_backstory.concept_approval_date, FROM_BASE64(concept_content) as content,
+            approved_user.name AS concept_approved_by, ecc_backstory.concept_updated_date, change_requester.name as concept_changes_requested_by, ecc_backstory.concept_changes_requested_date, ecc_backstory.concept_approval_date, FROM_BASE64(concept_content) as content,
             FROM_BASE64(concept_changes) as concept_changes,  FROM_BASE64(backstory_changes) as backstory_changes, status.status_name, status.status_description, timestamp
                 FROM ecc_backstory
                 LEFT join ecc_backstory_status status on (ecc_backstory.concept_status = status.id AND status.status_type = 'concept')
                 LEFT join ecc_characters characters on (ecc_backstory.characterID = characters.characterID)
                 LEFT JOIN jml_users update_user ON (update_user.id = ecc_backstory.concept_updated_by)
                 LEFT JOIN jml_users approved_user ON (approved_user.id = ecc_backstory.concept_approved_by)
+                LEFT JOIN jml_users change_requester ON (change_requester.id = ecc_backstory.concept_changes_requested_by)
                 WHERE ecc_backstory.characterID = $id";
         }
         if ($type == 'backstory') {
                 $query = "SELECT ecc_backstory.characterID, characters.accountID as accountID, characters.character_name as name, characters.faction as faction, update_user.name AS backstory_updated_by,
-                approved_user.name AS backstory_approved_by, ecc_backstory.backstory_updated_date, ecc_backstory.backstory_approval_date, FROM_BASE64(backstory_content) as content,
+                 ecc_backstory.backstory_updated_date, change_requester.name as backstory_changes_requested_by, ecc_backstory.backstory_changes_requested_date, approved_user.name AS backstory_approved_by, ecc_backstory.backstory_approval_date, FROM_BASE64(backstory_content) as content,
                 FROM_BASE64(concept_changes) as concept_changes,  FROM_BASE64(backstory_changes) as backstory_changes, status.status_name, status.status_description, timestamp
                     FROM ecc_backstory
                     LEFT join ecc_backstory_status status on (ecc_backstory.backstory_status = status.id AND status.status_type = 'backstory')
                     LEFT join ecc_characters characters on (ecc_backstory.characterID = characters.characterID)
                     LEFT JOIN jml_users update_user ON (update_user.id = ecc_backstory.backstory_updated_by)
                     LEFT JOIN jml_users approved_user ON (approved_user.id = ecc_backstory.backstory_approved_by)
+                    LEFT JOIN jml_users change_requester ON (change_requester.id = ecc_backstory.backstory_changes_requested_by)
                     WHERE ecc_backstory.characterID = $id";
         }
         $stmt = Database::$conn->prepare($query);
@@ -37,26 +39,27 @@ class Backstory
     public function get_all_backstories($type)
     {
         if ($type == 'concept') {
-            $query = "SELECT ecc_backstory.characterID, characters.accountID as accountID, characters.character_name as name, characters.faction as faction, update_user.name AS concept_updated_by, ecc_backstory.concept_updated_date,
-            approved_user.name AS concept_approved_by, ecc_backstory.concept_approval_date, FROM_BASE64(concept_content) as content, FROM_BASE64(concept_changes) as concept_changes, 
-            FROM_BASE64(backstory_changes) as backstory_changes, status.status_name, status.status_description, timestamp
+            $query = "SELECT ecc_backstory.characterID, characters.accountID as accountID, characters.character_name as name, characters.faction as faction, update_user.name AS concept_updated_by,
+            approved_user.name AS concept_approved_by, ecc_backstory.concept_updated_date, change_requester.name as concept_changes_requested_by, ecc_backstory.concept_changes_requested_date, ecc_backstory.concept_approval_date, FROM_BASE64(concept_content) as content,
+            FROM_BASE64(concept_changes) as concept_changes,  FROM_BASE64(backstory_changes) as backstory_changes, status.status_name, status.status_description, timestamp
                 FROM ecc_backstory
                 LEFT join ecc_backstory_status status on (ecc_backstory.concept_status = status.id AND status.status_type = 'concept')
                 LEFT join ecc_characters characters on (ecc_backstory.characterID = characters.characterID)
                 LEFT JOIN jml_users update_user ON (update_user.id = ecc_backstory.concept_updated_by)
                 LEFT JOIN jml_users approved_user ON (approved_user.id = ecc_backstory.concept_approved_by)
+                LEFT JOIN jml_users change_requester ON (change_requester.id = ecc_backstory.concept_changes_requested_by)
 		ORDER by characters.faction ASC, characters.character_name ASC";
         }
         if ($type == 'backstory') {
-            $query = "SELECT ecc_backstory.characterID, characters.accountID as accountID, characters.character_name as name, characters.faction as faction,
-            update_user.name AS backstory_updated_by, ecc_backstory.backstory_updated_date, approved_user.name AS backstory_approved_by,  ecc_backstory.backstory_approval_date,
-		FROM_BASE64(backstory_content) as content, FROM_BASE64(concept_changes) as concept_changes,  FROM_BASE64(backstory_changes) as backstory_changes, status.status_name as backstory_status, ecc_backstory.concept_status as concept_status,
-  		status.status_description, timestamp
+            $query = "SELECT ecc_backstory.characterID, characters.accountID as accountID, characters.character_name as name, characters.faction as faction, update_user.name AS backstory_updated_by,
+            ecc_backstory.backstory_updated_date, change_requester.name as backstory_changes_requested_by, ecc_backstory.backstory_changes_requested_date, approved_user.name AS backstory_approved_by, ecc_backstory.backstory_approval_date, FROM_BASE64(backstory_content) as content,
+            FROM_BASE64(concept_changes) as concept_changes,  FROM_BASE64(backstory_changes) as backstory_changes, status.status_name as backstory_status, status.status_description, timestamp
                 FROM ecc_backstory
                 LEFT join ecc_backstory_status status on (ecc_backstory.backstory_status = status.id AND status.status_type = 'backstory')
                 LEFT join ecc_characters characters on (ecc_backstory.characterID = characters.characterID)
-                LEFT JOIN jml_users update_user ON (update_user.id = ecc_backstory.concept_updated_by)
-                LEFT JOIN jml_users approved_user ON (approved_user.id = ecc_backstory.concept_approved_by) 
+                LEFT JOIN jml_users update_user ON (update_user.id = ecc_backstory.backstory_updated_by)
+                LEFT JOIN jml_users approved_user ON (approved_user.id = ecc_backstory.backstory_approved_by)
+                LEFT JOIN jml_users change_requester ON (change_requester.id = ecc_backstory.backstory_changes_requested_by)
 		ORDER by characters.faction ASC, characters.character_name ASC";
         }
         $stmt = Database::$conn->prepare($query);
@@ -134,7 +137,7 @@ class Backstory
             $query = "UPDATE ecc_backstory SET backstory_status = (SELECT id from ecc_backstory_status WHERE status_name = '$status' AND status_type = '$type') WHERE characterID = $id;";
             if ($status == "approved") {
                 $query = $query . " UPDATE ecc_backstory SET
-                backstory_approved_by = $user,
+                backstory_approved_by = $user ,
                 backstory_approval_date = '$date'
                 WHERE characterID = $id;";
             }
