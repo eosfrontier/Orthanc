@@ -52,7 +52,7 @@ class Backstory
         }
         if ($type == 'backstory') {
             $query = "SELECT ecc_backstory.characterID, characters.accountID as accountID, characters.character_name as name, characters.faction as faction, update_user.name AS backstory_updated_by,
-            ecc_backstory.backstory_updated_date, change_requester.name as backstory_changes_requested_by, ecc_backstory.backstory_changes_requested_date, approved_user.name AS backstory_approved_by, ecc_backstory.backstory_approval_date, FROM_BASE64(backstory_content) as content,
+            ecc_backstory.backstory_updated_date, change_requester.name as backstory_changes_requested_by, ecc_backstory.backstory_changes_requested_date, approved_user.name AS backstory_approved_by, ecc_backstory.backstory_approval_date, FROM_BASE64(backstory_content) as content, FROM_BASE64(concept_content) as concept_content,
             FROM_BASE64(concept_changes) as concept_changes,  FROM_BASE64(backstory_changes) as backstory_changes, status.status_name as backstory_status, status.status_description, timestamp
                 FROM ecc_backstory
                 LEFT join ecc_backstory_status status on (ecc_backstory.backstory_status = status.id AND status.status_type = 'backstory')
