@@ -56,7 +56,7 @@ class Backstory
                 LEFT JOIN jml_users update_user ON (update_user.id = ecc_backstory.concept_updated_by)
                 LEFT JOIN jml_users approved_user ON (approved_user.id = ecc_backstory.concept_approved_by)
                 LEFT JOIN jml_users change_requester ON (change_requester.id = ecc_backstory.concept_changes_requested_by)
-		ORDER by characters.faction ASC, characters.character_name ASC";
+		        ORDER by characters.faction ASC, characters.character_name ASC";
         }
 
         if ($type == 'backstory') {
@@ -72,7 +72,7 @@ class Backstory
                 LEFT JOIN jml_users update_user ON (update_user.id = ecc_backstory.backstory_updated_by)
                 LEFT JOIN jml_users approved_user ON (approved_user.id = ecc_backstory.backstory_approved_by)
                 LEFT JOIN jml_users change_requester ON (change_requester.id = ecc_backstory.backstory_changes_requested_by)
-		ORDER by characters.faction ASC, characters.character_name ASC";
+                ORDER by characters.faction ASC, characters.character_name ASC";
         }
         $stmt = Database::$conn->prepare($query);
         $res = $stmt->execute();
