@@ -55,7 +55,7 @@ class Joomla
 	{
 		$response = [];
 		$stmt = Database::$conn->prepare(
-			"SELECT r2.user_id, 
+			"SELECT r2.user_id as id, 
 			coalesce(replace(replace(replace(CONCAT(r2.first_name, ' ', COALESCE(v6.field_value,''),' ', r2.last_name),' ','<>'),'><',''),'<>',' ')) as name
 			FROM jml_eb_registrants r2
 				left join jml_eb_field_values v6 on (v6.registrant_id = r2.id and v6.field_id = 16)
