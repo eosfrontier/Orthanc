@@ -55,15 +55,20 @@ class Joomla
 	{
 		$response = [];
 		$stmt = Database::$conn->prepare(
-			"SELECT r2.user_id as id, 
-			coalesce(replace(replace(replace(CONCAT(r2.first_name, ' ', COALESCE(v6.field_value,''),' ', r2.last_name),' ','<>'),'><',''),'<>',' ')) as name
-			FROM jml_eb_registrants r2
-				left join jml_eb_field_values v6 on (v6.registrant_id = r2.id and v6.field_id = 16)
-			WHERE r2.id = 
-				(SELECT max(r1.id) FROM jml_eb_registrants r1 
-				WHERE r1.user_id = r2.user_id) AND r2.user_id IN (SELECT user_id FROM jml_user_usergroup_map 
-				WHERE group_id IN  (SELECT id FROM jml_usergroups 
-				WHERE id = $group_id UNION SELECT id FROM jml_usergroups WHERE parent_id = $group_id)) ORDER BY name"
+			"SELECT DISTINCT u.id, coalesce(replace(replace(replace(CONCAT(r.first_name, ' ', COALESCE(v6.field_value,''),' ', r.last_name),' ','<>'),'><',''),'<>',' '), u.name) as name FROM jml_users u
+			left JOIN jml_eb_registrants r ON u.id = r.user_id
+			left join jml_eb_field_values v5 on (v5.registrant_id = r.id and v5.field_id = 14)
+			left join jml_eb_field_values v6 on (v6.registrant_id = r.id and v6.field_id = 16)
+			WHERE u.id in (SELECT user_id FROM jml_user_usergroup_map WHERE group_id IN (SELECT id FROM jml_usergroups WHERE id = $group_id UNION SELECT id FROM jml_usergroups WHERE parent_id = $group_id)) ORDER by name"
+			// "SELECT r2.user_id as id, 
+			// coalesce(replace(replace(replace(CONCAT(r2.first_name, ' ', COALESCE(v6.field_value,''),' ', r2.last_name),' ','<>'),'><',''),'<>',' ')) as name
+			// FROM jml_eb_registrants r2
+			// 	left join jml_eb_field_values v6 on (v6.registrant_id = r2.id and v6.field_id = 16)
+			// WHERE r2.id = 
+			// 	(SELECT max(r1.id) FROM jml_eb_registrants r1 
+			// 	WHERE r1.user_id = r2.user_id) AND r2.user_id IN (SELECT user_id FROM jml_user_usergroup_map 
+			// 	WHERE group_id IN  (SELECT id FROM jml_usergroups 
+			// 	WHERE id = $group_id UNION SELECT id FROM jml_usergroups WHERE parent_id = $group_id)) ORDER BY name"
 		);
 		$users = $stmt->execute();
 		$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
