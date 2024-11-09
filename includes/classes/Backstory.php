@@ -99,13 +99,15 @@ class Backstory
             $query = "INSERT INTO ecc_backstory (characterID, concept_changes, concept_changes_requested_by, concept_changes_requested_date)
                 VALUES (:id, :content, :user, :update_date)
                 ON DUPLICATE KEY UPDATE
-                concept_changes = :content, concept_changes_requested_by = :user, concept_changes_requested_date = :update_date";
+                concept_changes = :content, 
+                concept_changes_requested_by = :user, 
+                concept_changes_requested_date = :update_date";
         }
         if ($type == 'concept_comment') {
             $query = "INSERT INTO ecc_backstory (characterID, concept_comment)
-                VALUES (:id, :content)
+                VALUES (:id, :content, :user, :update_date)
                 ON DUPLICATE KEY UPDATE
-                concept_comment = :content";
+                concept_changes = :content";
         }
         if ($type == 'backstory_changes') {
             $query = "INSERT INTO ecc_backstory (characterID, backstory_changes, backstory_changes_requested_by, backstory_changes_requested_date)
@@ -120,6 +122,23 @@ class Backstory
         $stmt->bindParam(':content', $base64_content, PDO::PARAM_STR);
         $stmt->bindParam(':user', $user, PDO::PARAM_INT);
         $stmt->bindParam(':update_date', $date, PDO::PARAM_STR);
+        $res = $stmt->execute();
+        return $stmt->rowCount();
+    }
+
+    public function set_approval_comment($id, $type, $content)
+    {
+        if ($type == 'concept_comment') {
+            $query = "INSERT INTO ecc_backstory (characterID, concept_comment)
+                VALUES (:id, :content)
+                ON DUPLICATE KEY UPDATE
+                concept_comment = :content";
+        }
+        $stmt = Database::$conn->prepare($query);
+        #bindParam takes arguments var, replacement, type
+        $base64_content = base64_encode($content);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':content', $base64_content, PDO::PARAM_STR);
         $res = $stmt->execute();
         return $stmt->rowCount();
     }

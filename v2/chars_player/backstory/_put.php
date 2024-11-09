@@ -9,7 +9,12 @@ else {
 		http_response_code( 400 );
 		die(json_encode("Invalid type. 'type' must be 'concept', 'backstory', 'concept_changes', 'concept_comment', or 'backstory_changes'"));
 	}
-	$a_result = $c_fetch->set_backstory( $input['char_id'], $input['type'], $input['content'], $input['user'] );
+	if ( $input['type']  == 'concept_comment' ){
+		$a_result = $c_fetch->set_approval_comment( $input['char_id'], $input['type'], $input['content'] );
+	}
+	else {
+		$a_result = $c_fetch->set_backstory( $input['char_id'], $input['type'], $input['content'], $input['user'] );
+	}
 	http_response_code( 200 );
 	echo json_encode( $a_result );
 	die();
