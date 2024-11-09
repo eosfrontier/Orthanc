@@ -101,6 +101,12 @@ class Backstory
                 ON DUPLICATE KEY UPDATE
                 concept_changes = :content, concept_changes_requested_by = :user, concept_changes_requested_date = :update_date";
         }
+        if ($type == 'concept_comment') {
+            $query = "INSERT INTO ecc_backstory (characterID, concept_comment)
+                VALUES (:id, :content)
+                ON DUPLICATE KEY UPDATE
+                concept_comment = :content";
+        }
         if ($type == 'backstory_changes') {
             $query = "INSERT INTO ecc_backstory (characterID, backstory_changes, backstory_changes_requested_by, backstory_changes_requested_date)
                 VALUES (:id, :content, :user, :update_date)
