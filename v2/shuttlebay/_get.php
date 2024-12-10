@@ -16,6 +16,7 @@ if (empty($response)) {
 	echo json_encode('None found.');
 	die();
 }
+
 http_response_code(200);
 echo json_encode($response);
 die();

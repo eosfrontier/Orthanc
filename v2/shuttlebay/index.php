@@ -1,4 +1,6 @@
 <?php
+header( 'Access-Control-Allow-Origin: *' );
+header( 'Content-Type: application/json; charset=UTF-8' );
 require_once $_SERVER['DOCUMENT_ROOT'] . '/orthanc/includes/include.php';
 #require_once $_SERVER['DOCUMENT_ROOT'] . '/orthanc/includes/token.php';
 $shuttlebay = new Shuttlebay();
