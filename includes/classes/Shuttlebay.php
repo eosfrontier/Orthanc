@@ -23,7 +23,7 @@ class Shuttlebay {
         JOIN esb_shuttle_status stat ON stat.id = s.status
         LEFT JOIN ecc_characters chars ON chars.characterID = s.assigned_to
         JOIN ecc_skills_allskills skill ON ((skill.skill_id = c.required_skill) AND (c.id = s.class))
-        ORDER by s.status, s.name;
+        ORDER by s.name;
         SQL;
 
         $res = $this->runQuery($sql);
